@@ -16,19 +16,28 @@ class Display:
 
 
 class Paddle():
-    def __init__(self, start_x, start_y):
+    def __init__(self, x, y):
         self.color = (255, 255, 255)
-        self.rect = pygame.Rect((start_x, start_y), (25, 250))
+        self.rect = pygame.Rect((x, y), (15, 75))
+
+class Ball():
+    def __init__(self, x, y):
+        self.color = (255, 255, 255)
+        self.x = x
+        self.y = y
+        self.radius = 8 
 
 
 
 def main():
     pygame.init()
-    d = Display(1920, 1080)
+    d = Display(640, 480)
     clock = pygame.time.Clock()
     running = True
 
-    l_paddle = Paddle(100, 500)
+    l_paddle = Paddle(60, 200)
+    ball = Ball(320, 240)
+
 
 
     while running:
@@ -40,6 +49,7 @@ def main():
 
         d.surface.fill((0, 0, 0))
         pygame.draw.rect(d.surface, l_paddle.color, l_paddle.rect)
+        pygame.draw.circle(d.surface, ball.color, (ball.x, ball.y), ball.radius)
         pygame.display.flip()
 
 
