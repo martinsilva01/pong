@@ -46,6 +46,9 @@ def main():
     running = True
 
     l_paddle = Paddle(60, 200)
+
+    r_paddle = Paddle(580, 200)
+
     ball = Ball(320, 240)
 
 
@@ -58,19 +61,31 @@ def main():
                 sys.exit()
 
         keys = pygame.key.get_pressed()
-        curr_y = l_paddle.get_y()
+        curr_l_y = l_paddle.get_y()
+
+        curr_r_y = r_paddle.get_y()
 
 
         if keys[pygame.K_w] and not keys[pygame.K_s]:
-            if curr_y > 0:
+            if curr_l_y > 0:
                 l_paddle.move(-10) 
             
         if keys[pygame.K_s] and not keys[pygame.K_w]:
-            if curr_y < (d.get_height()-75):
+            if curr_l_y < (d.get_height()-75):
                 l_paddle.move(10) 
+
+        if keys[pygame.K_UP] and not keys[pygame.K_DOWN]:
+            if curr_r_y > 0:
+                r_paddle.move(-10) 
+            
+        if keys[pygame.K_DOWN] and not keys[pygame.K_UP]:
+            if curr_r_y < (d.get_height()-75):
+                r_paddle.move(10) 
+         
             
         d.surface.fill((0, 0, 0))
         pygame.draw.rect(d.surface, l_paddle.color, l_paddle.rect)
+        pygame.draw.rect(d.surface, l_paddle.color, r_paddle.rect)
         pygame.draw.circle(d.surface, ball.color, (ball.x, ball.y), ball.radius)
         pygame.display.flip()
 
