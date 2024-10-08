@@ -20,6 +20,16 @@ class Paddle():
         self.color = (255, 255, 255)
         self.rect = pygame.Rect((x, y), (15, 75))
 
+    def get_x(self):
+        return self.rect.x
+
+    def get_y(self):
+        return self.rect.y
+
+    def move(self, px):
+        self.rect = self.rect.move(0, px)
+        return
+
 class Ball():
     def __init__(self, x, y):
         self.color = (255, 255, 255)
@@ -47,6 +57,18 @@ def main():
                 running = False
                 sys.exit()
 
+        keys = pygame.key.get_pressed()
+        curr_y = l_paddle.get_y()
+
+
+        if keys[pygame.K_w] and not keys[pygame.K_s]:
+            if curr_y > 0:
+                l_paddle.move(-10) 
+            
+        if keys[pygame.K_s] and not keys[pygame.K_w]:
+            if curr_y < (d.get_height()-75):
+                l_paddle.move(10) 
+            
         d.surface.fill((0, 0, 0))
         pygame.draw.rect(d.surface, l_paddle.color, l_paddle.rect)
         pygame.draw.circle(d.surface, ball.color, (ball.x, ball.y), ball.radius)
