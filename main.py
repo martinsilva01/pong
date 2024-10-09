@@ -1,93 +1,116 @@
-import sys
 import pygame
+from pygame.locals import *
+import sys
+import math
+ 
+pygame.init()
+ 
+vec = pygame.math.Vector2 
+HEIGHT = 480
+WIDTH = 640
+LEFT = 0
+RIGHT = 1
+FPS = 60
+FramePerSec = pygame.time.Clock()
+ 
+displaysurface = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Pong")
+ 
+class Paddle(pygame.sprite.Sprite):
+    def __init__(self, x, y, l_or_r):
+        super().__init__() 
+        self.surf = pygame.Surface((15, 75))
+        self.surf.fill((255,255,255))
+        self.rect = self.surf.get_rect()
+        self.speed = 10
+   
+        self.pos = vec((x, y))
+        self.rect.center = self.pos 
+        self.l_or_r = l_or_r
+ 
+    def move(self):    
+        pressed_keys = pygame.key.get_pressed()  
 
+        if (pressed_keys[K_s] and self.l_or_r == 0) or (pressed_keys[K_DOWN] and self.l_or_r == 1):
+            if(self.pos.y >= HEIGHT - self.rect.h/2):
+                self.pos.y = HEIGHT - self.rect.h/2
+            else:
+                self.pos.y += self.speed
+        if (pressed_keys[K_w] and self.l_or_r == 0) or (pressed_keys[K_UP] and self.l_or_r == 1):
+            if(self.pos.y <= 0 + self.rect.h/2):
+                self.pos.y = 0 + self.rect.h/2
+            else:
+                self.pos.y -= self.speed
+            
+        self.rect.center = self.pos    
 
-class Display:
-    def __init__(self, width, height):
-        self.width = width
-        self.height = height
-        self.surface = pygame.display.set_mode((width, height))
-
-    def get_width(self):
-        return self.width
-
-    def get_height(self):
-        return self.height
-
-
-class Paddle():
+class Ball(pygame.sprite.Sprite):
     def __init__(self, x, y):
-        self.color = (255, 255, 255)
-        self.rect = pygame.Rect((x, y), (15, 75))
+        super().__init__() 
+        self.surf = pygame.Surface((15, 15))
+        self.surf.fill((255,255,255))
+        self.rect = self.surf.get_rect()
+   
+        self.pos = vec((x, y))
+        self.rect.center = self.pos 
 
-    def get_x(self):
-        return self.rect.x
+        self.direction = [1, 0]
+        self.velocity = 4
+    
+    def move(self):
+        self.pos.x += self.direction[0] * self.velocity
+        self.pos.y += self.direction[1] * self.velocity
 
-    def get_y(self):
-        return self.rect.y
+        self.rect.center = self.pos    
 
-    def move(self, px):
-        self.rect = self.rect.move(0, px)
-        return
+    def bounce(self):
+        #temporary function call to just bounce ball the opposite way, Martin modify this for angle
+        self.direction[0] *= -1
+        self.direction[1] *= -1
 
-class Ball():
-    def __init__(self, x, y):
-        self.color = (255, 255, 255)
-        self.x = x
-        self.y = y
-        self.radius = 8 
+    def set_speed(self, newVel):
+        self.velocity = newVel
 
-
+    def change_angle(self, newAng):
+        self.direction[0] = math.cos(newAng * math.pi / 180)
+        self.direction[1] = math.sin(newAng * math.pi / 180)
 
 def main():
-    pygame.init()
-    d = Display(640, 480)
-    clock = pygame.time.Clock()
-    running = True
+    l_paddle = Paddle(60, HEIGHT/2, LEFT)
+    r_paddle = Paddle(580, HEIGHT/2, RIGHT)
 
-    l_paddle = Paddle(60, 200)
+    pong_b = Ball(WIDTH/2, HEIGHT/2)
+    
+    paddlesGroup = pygame.sprite.Group()
+    paddlesGroup.add(l_paddle)
+    paddlesGroup.add(r_paddle)
 
-    r_paddle = Paddle(580, 200)
-
-    ball = Ball(320, 240)
-
-
-
-    while running:
-        clock.tick(60)
+    gamePieceGroup = pygame.sprite.Group()
+    gamePieceGroup.add(pong_b)
+    
+    while True:
         for event in pygame.event.get():
-            if event.type == pygame.quit:
-                running = False
+            if event.type == QUIT:
+                pygame.quit()
                 sys.exit()
+        
+        displaysurface.fill((0,0,0))
+    
+        l_paddle.move()
+        r_paddle.move()
+        pong_b.move()
+        for entity in paddlesGroup:
+            displaysurface.blit(entity.surf, entity.rect)
+        
+        for entity in gamePieceGroup:
+            displaysurface.blit(entity.surf, entity.rect)
+        
+        if pygame.sprite.spritecollide(pong_b, paddlesGroup, False):
+            pong_b.bounce()
+        
+        pygame.display.update()
+        FramePerSec.tick(FPS)
 
-        keys = pygame.key.get_pressed()
-        curr_l_y = l_paddle.get_y()
-
-        curr_r_y = r_paddle.get_y()
-
-
-        if keys[pygame.K_w] and not keys[pygame.K_s]:
-            if curr_l_y > 0:
-                l_paddle.move(-10) 
-            
-        if keys[pygame.K_s] and not keys[pygame.K_w]:
-            if curr_l_y < (d.get_height()-75):
-                l_paddle.move(10) 
-
-        if keys[pygame.K_UP] and not keys[pygame.K_DOWN]:
-            if curr_r_y > 0:
-                r_paddle.move(-10) 
-            
-        if keys[pygame.K_DOWN] and not keys[pygame.K_UP]:
-            if curr_r_y < (d.get_height()-75):
-                r_paddle.move(10) 
-         
-            
-        d.surface.fill((0, 0, 0))
-        pygame.draw.rect(d.surface, l_paddle.color, l_paddle.rect)
-        pygame.draw.rect(d.surface, l_paddle.color, r_paddle.rect)
-        pygame.draw.circle(d.surface, ball.color, (ball.x, ball.y), ball.radius)
-        pygame.display.flip()
 
 
 if __name__ == '__main__':
