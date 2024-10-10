@@ -63,10 +63,12 @@ class Ball(pygame.sprite.Sprite):
 
         self.rect.center = self.pos    
 
-    def bounce(self):
-        #temporary function call to just bounce ball the opposite way, Martin modify this for angle
-        self.direction[0] *= -1
+    def boundary_bounce(self):
         self.direction[1] *= -1
+
+    def bounce(self, paddle):
+        self.direction[0] *= -1
+        self.direction[1] = ((paddle.pos[1] - self.pos[1]) / (paddle.rect.h / 2))
 
     def set_speed(self, newVel):
         self.velocity = newVel
@@ -104,9 +106,15 @@ def main():
         
         for entity in gamePieceGroup:
             displaysurface.blit(entity.surf, entity.rect)
-        
-        if pygame.sprite.spritecollide(pong_b, paddlesGroup, False):
-            pong_b.bounce()
+
+        collided = pygame.sprite.spritecollide(pong_b, paddlesGroup, False)
+        if collided:
+            collided = collided[0] # will only ever collide with 1 paddle at a time.
+            pong_b.bounce(collided)
+
+        if pong_b.pos[1] <= 0 or pong_b.pos[1] >= HEIGHT:
+            pong_b.boundary_bounce()
+
         
         pygame.display.update()
         FramePerSec.tick(FPS)
