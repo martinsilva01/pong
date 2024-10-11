@@ -6,7 +6,7 @@ import math
 from audio import *
 
 pygame.init()
- 
+
 vec = pygame.math.Vector2 
 HEIGHT = 480
 WIDTH = 640
