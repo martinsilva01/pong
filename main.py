@@ -2,7 +2,9 @@ import pygame
 from pygame.locals import *
 import sys
 import math
- 
+
+from audio import *
+
 pygame.init()
  
 vec = pygame.math.Vector2 
