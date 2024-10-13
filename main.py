@@ -3,7 +3,7 @@ from pygame.locals import *
 import sys
 import math
 
-from audio import *
+#from audio import *
 
 pygame.init()
 
@@ -79,9 +79,54 @@ class Ball(pygame.sprite.Sprite):
         self.direction[0] = math.cos(newAng * math.pi / 180)
         self.direction[1] = math.sin(newAng * math.pi / 180)
 
+class Bot(pygame.sprite.Sprite):
+    def __init__(self, x, y, l_or_r):
+        super().__init__()
+        self.surf = pygame.Surface((15, 75))
+        self.surf.fill((255, 255, 255))
+        self.rect = self.surf.get_rect()
+        self.speed = 10
+
+        self.pos = vec((x, y))
+        self.rect.center = self.pos
+        self.l_or_r = l_or_r
+
+    def BotMove(self, Range, Ball):
+        if Ball.pos.x >= Range:
+            if Ball.pos.y > self.pos.y:
+                if (self.pos.y >= HEIGHT - self.rect.h / 2):
+                    self.pos.y = HEIGHT - self.rect.h / 2
+                else:
+                    self.pos.y += self.speed
+            if Ball.pos.y < self.pos.y:
+                if (self.pos.y <= 0 + self.rect.h / 2):
+                    self.pos.y = 0 + self.rect.h / 2
+                else:
+                    self.pos.y -= self.speed
+        self.rect.center = self.pos
+
+
+
 def main():
+    BotSwitch = True
+    Difficulty = "HARD"  # Manully Toggle BotSwitch and Difficulty for now
+    Range = 0  # Reaction Time for the CPU opponent
+
+    if Difficulty == "HARD":
+        Range = 170
+    elif Difficulty == "MEDIUM":
+        Range = 350
+    elif Difficulty == "EASY":
+        Range = 475
+
+
+
     l_paddle = Paddle(60, HEIGHT/2, LEFT)
-    r_paddle = Paddle(580, HEIGHT/2, RIGHT)
+
+    if BotSwitch is True:  # Will create a Paddle object or Bot Object
+        r_paddle = Bot(580, HEIGHT / 2, RIGHT)
+    else:
+        r_paddle = Paddle(580, HEIGHT / 2, RIGHT)
 
     pong_b = Ball(WIDTH/2, HEIGHT/2)
     
@@ -101,7 +146,12 @@ def main():
         displaysurface.fill((0,0,0))
     
         l_paddle.move()
-        r_paddle.move()
+
+        if BotSwitch is True:  # Based on which opponent is playing
+            r_paddle.BotMove(Range, pong_b)
+        else:
+            r_paddle.move()
+
         pong_b.move()
         for entity in paddlesGroup:
             displaysurface.blit(entity.surf, entity.rect)
@@ -116,6 +166,10 @@ def main():
 
         if pong_b.pos[1] <= 0 or pong_b.pos[1] >= HEIGHT:
             pong_b.boundary_bounce()
+
+        if pong_b.velocity != 17:  # Ball will increase in speed every hit
+            pong_b.velocity += 0.5  # These values can change depending on how you guys want it to feel
+            # Also we will need to reset it to default value at the s
 
         
         pygame.display.update()
