@@ -2,6 +2,8 @@ import pygame
 from pygame.locals import *
 import sys
 import math
+import time
+import random
 
 #from audio import *
 
@@ -245,6 +247,12 @@ def StartMenu():
         pygame.display.flip()
 
 def main():
+    left_score = 0
+    right_score = 0
+    Small_Font = pygame.font.SysFont('Roboto', 60)
+    left_scoreboard = Small_Font.render(f'{left_score}', True, (255, 255, 255), (0, 0, 0))
+    right_scoreboard = Small_Font.render(f'{right_score}', True, (255, 255, 255), (0, 0, 0))
+    
 
     if Difficulty == "HARD":
         Range = 170
@@ -278,6 +286,9 @@ def main():
                 sys.exit()
         
         displaysurface.fill((0,0,0))
+
+        displaysurface.blit(left_scoreboard, (10, 0))
+        displaysurface.blit(right_scoreboard, (WIDTH-30, 0))
     
         l_paddle.move()
 
@@ -300,6 +311,23 @@ def main():
 
         if pong_b.pos[1] <= 0 or pong_b.pos[1] >= HEIGHT:
             pong_b.boundary_bounce()
+
+        # point checking and reset ball
+        if pong_b.pos[0] < 0 or pong_b.pos[0] > WIDTH:
+
+            if pong_b.pos[0] < 0:
+                right_score += 1
+                
+            elif pong_b.pos[0] > WIDTH:
+                left_score += 1
+
+            pong_b.pos = vec(WIDTH/2, HEIGHT/2)
+            pong_b.velocity = 4
+            directions = [[1, 0], [-1, 0]]
+            pong_b.direction = random.choice(directions)
+            left_scoreboard = Small_Font.render(f'{left_score}', True, (255, 255, 255), (0, 0, 0))
+            right_scoreboard = Small_Font.render(f'{right_score}', True, (255, 255, 255), (0, 0, 0))
+            time.sleep(1)
 
         if pong_b.velocity != 17:  # Ball will increase in speed every hit
             pong_b.velocity += 0.005  # These values can change depending on how you guys want it to feel
