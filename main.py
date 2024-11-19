@@ -12,13 +12,13 @@ pygame.init()
 vec = pygame.math.Vector2 
 HEIGHT = 580
 WIDTH = 640
-LEFT = 0
-RIGHT = 1
+LEFT = 1
+RIGHT = -1
 FPS = 60
 FramePerSec = pygame.time.Clock()
 
 replay = True
-BotSwitch = True # if it is singleplayer
+BotSwitch = True  # if it is singleplayer
 Difficulty = "HARD"  # Manully Toggle BotSwitch and Difficulty for now
 Range = 0  # Reaction Time for the CPU opponent
 
@@ -44,7 +44,7 @@ class Paddle(pygame.sprite.Sprite):
     def __init__(self, x, y, l_or_r):
         super().__init__() 
         self.surf = pygame.Surface((15, 75))
-        self.surf.fill((255,255,255))
+        self.surf.fill((255, 255, 255))
         self.rect = self.surf.get_rect()
         self.speed = 10
    
@@ -55,25 +55,26 @@ class Paddle(pygame.sprite.Sprite):
     def move(self):    
         pressed_keys = pygame.key.get_pressed()  
 
-        if (pressed_keys[K_s] and self.l_or_r == 0) or (pressed_keys[K_DOWN] and self.l_or_r == 1):
-            if(self.pos.y >= HEIGHT - self.rect.h/2):
+        if (pressed_keys[K_s] and self.l_or_r == LEFT) or (pressed_keys[K_DOWN] and self.l_or_r == RIGHT):
+            if (self.pos.y >= HEIGHT - self.rect.h/2):
                 self.pos.y = HEIGHT - self.rect.h/2
             else:
                 self.pos.y += self.speed
-        if (pressed_keys[K_w] and self.l_or_r == 0) or (pressed_keys[K_UP] and self.l_or_r == 1):
-            if(self.pos.y <= 0 + self.rect.h/2):
+        if (pressed_keys[K_w] and self.l_or_r == LEFT) or (pressed_keys[K_UP] and self.l_or_r == RIGHT):
+            if (self.pos.y <= 0 + self.rect.h/2):
                 self.pos.y = 0 + self.rect.h/2
             else:
                 self.pos.y -= self.speed
             
         self.rect.center = self.pos    
 
+
 # Ball class
 class Ball(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__() 
         self.surf = pygame.Surface((15, 15))
-        self.surf.fill((255,255,255))
+        self.surf.fill((255, 255, 255))
         self.rect = self.surf.get_rect()
    
         self.pos = vec((x, y))
@@ -92,7 +93,7 @@ class Ball(pygame.sprite.Sprite):
         self.direction[1] *= -1
 
     def bounce(self, paddle):
-        self.direction[0] *= -1
+        self.direction[0] = paddle.l_or_r
         self.direction[1] = ((paddle.pos[1] - self.pos[1]) / (paddle.rect.h / 2))
 
     def set_speed(self, newVel):
@@ -102,19 +103,9 @@ class Ball(pygame.sprite.Sprite):
         self.direction[0] = math.cos(newAng * math.pi / 180)
         self.direction[1] = math.sin(newAng * math.pi / 180)
 
+
 # the cpu AI
-class Bot(pygame.sprite.Sprite):
-    def __init__(self, x, y, l_or_r):
-        super().__init__()
-        self.surf = pygame.Surface((15, 75))
-        self.surf.fill((255, 255, 255))
-        self.rect = self.surf.get_rect()
-        self.speed = 10
-
-        self.pos = vec((x, y))
-        self.rect.center = self.pos
-        self.l_or_r = l_or_r
-
+class Bot(Paddle):
     def BotMove(self, Range, Ball):
         if Ball.pos.x >= Range:
             if Ball.pos.y > self.pos.y:
@@ -128,8 +119,6 @@ class Bot(pygame.sprite.Sprite):
                 else:
                     self.pos.y -= self.speed
         self.rect.center = self.pos
-
-
 
 
 def StartMenu():
@@ -150,7 +139,7 @@ def StartMenu():
     MediumButton = Button((ButtonIndent, 365), 450, 50)
     HardButton = Button((ButtonIndent, 430), 450, 50)
 
-    Screen = displaysurface#Display(640, 580)
+    Screen = displaysurface  # Display(640, 580)
     clock = pygame.time.Clock()
     running = True
     screen_index = 1
@@ -285,10 +274,10 @@ def main():
                 pygame.quit()
                 sys.exit()
         
-        displaysurface.fill((0,0,0))
+        displaysurface.fill((0, 0, 0))
 
-        displaysurface.blit(left_scoreboard, (10, 0))
-        displaysurface.blit(right_scoreboard, (WIDTH-30, 0))
+        displaysurface.blit(left_scoreboard, (60, 30))
+        displaysurface.blit(right_scoreboard, (WIDTH-90, 30))
     
         l_paddle.move()
 
@@ -305,12 +294,18 @@ def main():
             displaysurface.blit(entity.surf, entity.rect)
 
         collided = pygame.sprite.spritecollide(pong_b, paddlesGroup, False)
-        if collided:
-            collided = collided[0] # will only ever collide with 1 paddle at a time.
+        if collided and pong_b:
+            collided = collided[0]  # will only ever collide with 1 paddle at a time.
             pong_b.bounce(collided)
 
         if pong_b.pos[1] <= 0 or pong_b.pos[1] >= HEIGHT:
             pong_b.boundary_bounce()
+
+        # Ball will increase in speed every hit
+        # These values can change depending on how you guys want it to feel
+        if pong_b.velocity != 17:  
+            pong_b.velocity += 0.005  
+        # Also we will need to reset it to default value at the start
 
         # point checking and reset ball
         if pong_b.pos[0] < 0 or pong_b.pos[0] > WIDTH:
@@ -329,11 +324,6 @@ def main():
             right_scoreboard = Small_Font.render(f'{right_score}', True, (255, 255, 255), (0, 0, 0))
             time.sleep(1)
 
-        if pong_b.velocity != 17:  # Ball will increase in speed every hit
-            pong_b.velocity += 0.005  # These values can change depending on how you guys want it to feel
-            # Also we will need to reset it to default value at the s
-
-        
         pygame.display.update()
         FramePerSec.tick(FPS)
 
