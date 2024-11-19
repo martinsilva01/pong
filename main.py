@@ -89,9 +89,6 @@ class Ball(pygame.sprite.Sprite):
 
         self.rect.center = self.pos    
 
-    def boundary_bounce(self):
-        self.direction[1] *= -1
-
     def bounce(self, paddle):
         self.direction[0] = paddle.l_or_r
         self.direction[1] = ((paddle.pos[1] - self.pos[1]) / (paddle.rect.h / 2))
@@ -293,13 +290,17 @@ def main():
         for entity in gamePieceGroup:
             displaysurface.blit(entity.surf, entity.rect)
 
+        # Paddle Collision Bounce
         collided = pygame.sprite.spritecollide(pong_b, paddlesGroup, False)
         if collided:
             collided = collided[0]  # will only ever collide with 1 paddle at a time.
             pong_b.bounce(collided)
 
-        if pong_b.pos[1] <= 0 or pong_b.pos[1] >= HEIGHT:
-            pong_b.boundary_bounce()
+        # Top/Bottom Boundary Bounce
+        if pong_b.pos[1] <= 0:
+            pong_b.direction[1] = 1 * abs(pong_b.direction[1])
+        if pong_b.pos[1] >= HEIGHT:
+            pong_b.direction[1] *= -1 * abs(pong_b.direction[1])
 
         # Ball will increase in speed every hit
         # These values can change depending on how you guys want it to feel
