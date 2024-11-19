@@ -296,8 +296,9 @@ def main():
         collided = pygame.sprite.spritecollide(pong_b, paddlesGroup, False)
         if collided:
             collided = collided[0]  # will only ever collide with 1 paddle at a time.
-            print(collided)
             if collided != last_collided:
+                if pong_b.velocity <= 10:
+                    pong_b.velocity += 0.2
                 pong_b.bounce(collided)
                 last_collided = collided
 
@@ -311,8 +312,7 @@ def main():
 
         # Ball will increase in speed every hit (currently does every frame)
         # These values can change depending on how you guys want it to feel
-        if pong_b.velocity <= 17:  
-            pong_b.velocity += 0.005
+        
         # Also we will need to reset it to default value at the start
 
         # point checking and reset ball
