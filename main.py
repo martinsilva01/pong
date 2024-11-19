@@ -90,8 +90,8 @@ class Ball(pygame.sprite.Sprite):
         self.rect.center = self.pos    
 
     def bounce(self, paddle):
-        self.direction[0] = paddle.l_or_r
-        self.direction[1] = ((paddle.pos[1] - self.pos[1]) / (paddle.rect.h / 2))
+        self.direction[0] *= -1
+        self.direction[1] = ((paddle.pos[1] - self.pos[1]) / ((paddle.rect.h) / 2))
 
     def set_speed(self, newVel):
         self.velocity = newVel
@@ -249,6 +249,8 @@ def main():
 
 
 
+    last_collided = None
+
     l_paddle = Paddle(60, HEIGHT/2, LEFT)
 
     if BotSwitch is True:  # Will create a Paddle object or Bot Object
@@ -294,18 +296,23 @@ def main():
         collided = pygame.sprite.spritecollide(pong_b, paddlesGroup, False)
         if collided:
             collided = collided[0]  # will only ever collide with 1 paddle at a time.
-            pong_b.bounce(collided)
+            print(collided)
+            if collided != last_collided:
+                pong_b.bounce(collided)
+                last_collided = collided
 
         # Top/Bottom Boundary Bounce
         if pong_b.pos[1] <= 0:
+            pong_b.pos[1] = 1
             pong_b.direction[1] = 1 * abs(pong_b.direction[1])
         if pong_b.pos[1] >= HEIGHT:
+            pong_b.pos[1] = HEIGHT-1
             pong_b.direction[1] *= -1 * abs(pong_b.direction[1])
 
-        # Ball will increase in speed every hit
+        # Ball will increase in speed every hit (currently does every frame)
         # These values can change depending on how you guys want it to feel
-        if pong_b.velocity != 17:  
-            pong_b.velocity += 0.005  
+        if pong_b.velocity <= 17:  
+            pong_b.velocity += 0.005
         # Also we will need to reset it to default value at the start
 
         # point checking and reset ball
@@ -313,10 +320,12 @@ def main():
 
             if pong_b.pos[0] < 0:
                 right_score += 1
-                
+            
             elif pong_b.pos[0] > WIDTH:
                 left_score += 1
 
+
+            last_collided = None
             pong_b.pos = vec(WIDTH/2, HEIGHT/2)
             pong_b.velocity = 4
             directions = [[1, 0], [-1, 0]]
