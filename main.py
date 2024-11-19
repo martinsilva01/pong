@@ -294,7 +294,7 @@ def main():
             displaysurface.blit(entity.surf, entity.rect)
 
         collided = pygame.sprite.spritecollide(pong_b, paddlesGroup, False)
-        if collided and pong_b:
+        if collided:
             collided = collided[0]  # will only ever collide with 1 paddle at a time.
             pong_b.bounce(collided)
 
