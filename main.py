@@ -2,6 +2,8 @@ import pygame
 from pygame.locals import *
 import sys
 import math
+import time
+import random
 
 #from audio import *
 
@@ -14,10 +16,17 @@ LEFT = 0
 RIGHT = 1
 FPS = 60
 FramePerSec = pygame.time.Clock()
+
+replay = True
+BotSwitch = True # if it is singleplayer
+Difficulty = "HARD"  # Manully Toggle BotSwitch and Difficulty for now
+Range = 0  # Reaction Time for the CPU opponent
+
  
 displaysurface = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Pong")
 
+# Menu buttons
 class Button:
     def __init__(self, pos, width, height, text=""):
         self.rect = pygame.Rect(pos, (width, height))
@@ -30,6 +39,7 @@ class Button:
         if (MousePos[0] <= self.end_x) and (MousePos[0] >= self.pos[0]) and (MousePos[1] <= self.end_y) and (MousePos[1] >= self.pos[1]):
             return True
 
+# Paddle sprites
 class Paddle(pygame.sprite.Sprite):
     def __init__(self, x, y, l_or_r):
         super().__init__() 
@@ -58,6 +68,7 @@ class Paddle(pygame.sprite.Sprite):
             
         self.rect.center = self.pos    
 
+# Ball class
 class Ball(pygame.sprite.Sprite):
     def __init__(self, x, y):
         super().__init__() 
@@ -91,6 +102,7 @@ class Ball(pygame.sprite.Sprite):
         self.direction[0] = math.cos(newAng * math.pi / 180)
         self.direction[1] = math.sin(newAng * math.pi / 180)
 
+# the cpu AI
 class Bot(pygame.sprite.Sprite):
     def __init__(self, x, y, l_or_r):
         super().__init__()
@@ -119,79 +131,13 @@ class Bot(pygame.sprite.Sprite):
 
 
 
-def main():
-    BotSwitch = True
-    Difficulty = "HARD"  # Manully Toggle BotSwitch and Difficulty for now
-    Range = 0  # Reaction Time for the CPU opponent
-
-    if Difficulty == "HARD":
-        Range = 170
-    elif Difficulty == "MEDIUM":
-        Range = 350
-    elif Difficulty == "EASY":
-        Range = 475
-
-
-
-    l_paddle = Paddle(60, HEIGHT/2, LEFT)
-
-    if BotSwitch is True:  # Will create a Paddle object or Bot Object
-        r_paddle = Bot(580, HEIGHT / 2, RIGHT)
-    else:
-        r_paddle = Paddle(580, HEIGHT / 2, RIGHT)
-
-    pong_b = Ball(WIDTH/2, HEIGHT/2)
-    
-    paddlesGroup = pygame.sprite.Group()
-    paddlesGroup.add(l_paddle)
-    paddlesGroup.add(r_paddle)
-
-    gamePieceGroup = pygame.sprite.Group()
-    gamePieceGroup.add(pong_b)
-    
-    while True:
-        for event in pygame.event.get():
-            if event.type == QUIT:
-                pygame.quit()
-                sys.exit()
-        
-        displaysurface.fill((0,0,0))
-    
-        l_paddle.move()
-
-        if BotSwitch is True:  # Based on which opponent is playing
-            r_paddle.BotMove(Range, pong_b)
-        else:
-            r_paddle.move()
-
-        pong_b.move()
-        for entity in paddlesGroup:
-            displaysurface.blit(entity.surf, entity.rect)
-        
-        for entity in gamePieceGroup:
-            displaysurface.blit(entity.surf, entity.rect)
-
-        collided = pygame.sprite.spritecollide(pong_b, paddlesGroup, False)
-        if collided:
-            collided = collided[0] # will only ever collide with 1 paddle at a time.
-            pong_b.bounce(collided)
-
-        if pong_b.pos[1] <= 0 or pong_b.pos[1] >= HEIGHT:
-            pong_b.boundary_bounce()
-
-        if pong_b.velocity != 17:  # Ball will increase in speed every hit
-            pong_b.velocity += 0.5  # These values can change depending on how you guys want it to feel
-            # Also we will need to reset it to default value at the s
-
-        
-        pygame.display.update()
-        FramePerSec.tick(FPS)
-
 
 def StartMenu():
     pygame.init()
     ButtonIndent = 60
     TextIndent = 10
+    global Difficulty
+    global BotSwitch
 
     StartButton = Button((ButtonIndent, 375), 450, 100)
     ExitButton = Button((ButtonIndent, 500), 150, 50)
@@ -226,7 +172,7 @@ def StartMenu():
     Exit_Text = Small_Font.render("Quit", True, (0, 0, 0), (255, 255, 255))
     Back_Text = Small_Font.render("Back", True, (0, 0, 0), (255, 255, 255))
 
-    while running is True:
+    while running:
         clock.tick(60)
         for event in pygame.event.get():
             if event.type == pygame.quit:
@@ -238,18 +184,23 @@ def StartMenu():
                 if screen_index == 3:
                     if EasyButton.PressButton(pos):
                         print("WIP: Easy CPU")
+                        Difficulty = "EASY"
                         running = False
                     if MediumButton.PressButton(pos):
                         print("WIP: Medium CPU")
+                        Difficulty = "MEDIUM"
                         running = False
                     if HardButton.PressButton(pos):
                         print("WIP: Hard CPU")
+                        Difficulty = "HARD"
                         running = False
 
                 if screen_index == 2:
                     if OnePlayerButton.PressButton(pos):
                         screen_index = 3
+                        BotSwitch = True
                     if TwoPlayerButton.PressButton(pos):
+                        BotSwitch = False
                         running = False
 
                 if screen_index == 1:
@@ -295,7 +246,99 @@ def StartMenu():
         Screen.blit(Sub_Text, (435, 240))
         pygame.display.flip()
 
+def main():
+    left_score = 0
+    right_score = 0
+    Small_Font = pygame.font.SysFont('Roboto', 60)
+    left_scoreboard = Small_Font.render(f'{left_score}', True, (255, 255, 255), (0, 0, 0))
+    right_scoreboard = Small_Font.render(f'{right_score}', True, (255, 255, 255), (0, 0, 0))
+    
+
+    if Difficulty == "HARD":
+        Range = 170
+    elif Difficulty == "MEDIUM":
+        Range = 350
+    elif Difficulty == "EASY":
+        Range = 475
+
+
+
+    l_paddle = Paddle(60, HEIGHT/2, LEFT)
+
+    if BotSwitch is True:  # Will create a Paddle object or Bot Object
+        r_paddle = Bot(580, HEIGHT / 2, RIGHT)
+    else:
+        r_paddle = Paddle(580, HEIGHT / 2, RIGHT)
+
+    pong_b = Ball(WIDTH/2, HEIGHT/2)
+    
+    paddlesGroup = pygame.sprite.Group()
+    paddlesGroup.add(l_paddle)
+    paddlesGroup.add(r_paddle)
+
+    gamePieceGroup = pygame.sprite.Group()
+    gamePieceGroup.add(pong_b)
+    
+    while True:
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                pygame.quit()
+                sys.exit()
+        
+        displaysurface.fill((0,0,0))
+
+        displaysurface.blit(left_scoreboard, (10, 0))
+        displaysurface.blit(right_scoreboard, (WIDTH-30, 0))
+    
+        l_paddle.move()
+
+        if BotSwitch is True:  # Based on which opponent is playing
+            r_paddle.BotMove(Range, pong_b)
+        else:
+            r_paddle.move()
+
+        pong_b.move()
+        for entity in paddlesGroup:
+            displaysurface.blit(entity.surf, entity.rect)
+        
+        for entity in gamePieceGroup:
+            displaysurface.blit(entity.surf, entity.rect)
+
+        collided = pygame.sprite.spritecollide(pong_b, paddlesGroup, False)
+        if collided:
+            collided = collided[0] # will only ever collide with 1 paddle at a time.
+            pong_b.bounce(collided)
+
+        if pong_b.pos[1] <= 0 or pong_b.pos[1] >= HEIGHT:
+            pong_b.boundary_bounce()
+
+        # point checking and reset ball
+        if pong_b.pos[0] < 0 or pong_b.pos[0] > WIDTH:
+
+            if pong_b.pos[0] < 0:
+                right_score += 1
+                
+            elif pong_b.pos[0] > WIDTH:
+                left_score += 1
+
+            pong_b.pos = vec(WIDTH/2, HEIGHT/2)
+            pong_b.velocity = 4
+            directions = [[1, 0], [-1, 0]]
+            pong_b.direction = random.choice(directions)
+            left_scoreboard = Small_Font.render(f'{left_score}', True, (255, 255, 255), (0, 0, 0))
+            right_scoreboard = Small_Font.render(f'{right_score}', True, (255, 255, 255), (0, 0, 0))
+            time.sleep(1)
+
+        if pong_b.velocity != 17:  # Ball will increase in speed every hit
+            pong_b.velocity += 0.005  # These values can change depending on how you guys want it to feel
+            # Also we will need to reset it to default value at the s
+
+        
+        pygame.display.update()
+        FramePerSec.tick(FPS)
+
 
 if __name__ == '__main__':
-    StartMenu()
-    main()
+    if replay:
+        StartMenu()
+        main()
