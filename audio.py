@@ -1,13 +1,17 @@
+import os
 import pygame
 
 pygame.mixer.init()
 
-UI_BUTTON_SOUND_PATH = "assets/selection.wav"
-PADDLE_HIT_SOUND_PATH = "assets/collision.wav"
-WALL_HIT_SOUND_PATH = "assets/wallcollision.wav"
-SCORE_SOUND_PATH = "assets/score.wav"
-POWER_UP_SOUND_PATH = "assets/powerUp.wav"
-BACKGROUND_MUSIC_PATH = "assets/ponggameBGM.wav"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+ASSETS_DIR = os.path.join(BASE_DIR, "assets")
+
+UI_BUTTON_SOUND_PATH = os.path.join(ASSETS_DIR, "selection.wav")
+PADDLE_HIT_SOUND_PATH = os.path.join(ASSETS_DIR, "collision.wav")
+WALL_HIT_SOUND_PATH = os.path.join(ASSETS_DIR, "wallcollision.wav")
+SCORE_SOUND_PATH = os.path.join(ASSETS_DIR, "score.wav")
+POWER_UP_SOUND_PATH = os.path.join(ASSETS_DIR, "powerUp.wav")
+BACKGROUND_MUSIC_PATH = os.path.join(ASSETS_DIR, "ponggameBGM.wav")
 
 button_select_sound = pygame.mixer.Sound(UI_BUTTON_SOUND_PATH)
 paddle_hit_sound = pygame.mixer.Sound(PADDLE_HIT_SOUND_PATH)
@@ -27,8 +31,7 @@ def play_sound(sound):
 def play_background_music():
     pygame.mixer.music.load(BACKGROUND_MUSIC_PATH)
     pygame.mixer.music.set_volume(0.25)
-    pygame.mixer.music.play(-1) 
+    pygame.mixer.music.play(-1)
 
 def stop_background_music():
     pygame.mixer.music.stop()
-    
