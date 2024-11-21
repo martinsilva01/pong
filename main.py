@@ -372,6 +372,8 @@ def main():
             displaysurface.blit(entity.surf, entity.rect)
 
         # Paddle Collision Bounce
+        # Ball will increase in speed every hit 
+        # These values can change depending on how you guys want it to feel
         collided = pygame.sprite.spritecollide(pong_b, paddlesGroup, False)
         if collided:
             collided = collided[0]  # will only ever collide with 1 paddle at a time.
@@ -389,9 +391,7 @@ def main():
             pong_b.pos[1] = HEIGHT-1
             pong_b.direction[1] *= -1 * abs(pong_b.direction[1])
 
-        # Ball will increase in speed every hit (currently does every frame)
-        # These values can change depending on how you guys want it to feel
-        
+       
         # Also we will need to reset it to default value at the start
 
         # point checking and reset ball
