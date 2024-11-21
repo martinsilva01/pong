@@ -1,5 +1,5 @@
 # Added for the semester project
-LeaderBoards/
+LeaderBoards/Local*.txt
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
