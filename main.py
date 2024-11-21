@@ -81,7 +81,7 @@ class Ball(pygame.sprite.Sprite):
         self.rect.center = self.pos 
     
         self.direction = [1, 0]
-        self.velocity = 4
+        self.velocity = 6
     
     def move(self):
         self.pos.x += self.direction[0] * self.velocity
@@ -119,7 +119,7 @@ class Bot(Paddle):
 
 
 def StartMenu():
-    pygame.init()
+    # pygame.init()
     ButtonIndent = (WIDTH / 4)
     TextIndent = 10
     global Difficulty
@@ -151,7 +151,7 @@ def StartMenu():
     Sub_Text = Subtitle_Font.render("By Team 3", True, (255, 255, 255), (0, 0, 0))
     Start_Text = Big_Font.render("Start Game", True, (0, 0, 0), (255, 255, 255))
     Single_Text = Medium_Font.render("Singleplayer", True, (0, 0, 0), (255, 255, 255))
-    Multi_Text = Medium_Font.render("Multiplayer", True, (0, 0, 0), (255, 255, 255))
+    Multi_Text = Medium_Font.render("Multiplayer (Bo5)", True, (0, 0, 0), (255, 255, 255))
     Easy_Text = Small_Font.render("Easy CPU", True, (0, 0, 0), (255, 255, 255))
     Medium_Text = Small_Font.render("Medium CPU", True, (0, 0, 0), (255, 255, 255))
     Hard_Text = Small_Font.render("Hard CPU", True, (0, 0, 0), (255, 255, 255))
@@ -231,6 +231,85 @@ def StartMenu():
         Screen.blit(Pong_Text, ((WIDTH / 2) - 250, (HEIGHT / 10)))
         Screen.blit(Sub_Text, ((WIDTH / 2) - 250, 150 + (HEIGHT / 10)))
         pygame.display.flip()
+
+def EndMenu(score):
+    ButtonIndent = (WIDTH / 4)
+    TextIndent = 10
+    global Difficulty
+    global BotSwitch
+
+    MenuButton = Button((ButtonIndent, HEIGHT * 0.5), 300, 70)
+    QuitButton = Button((ButtonIndent, HEIGHT * 0.6), 300, 70)
+    
+    Screen = displaysurface  # Display(640, 580)
+    clock = pygame.time.Clock()
+    running = True
+
+    Big_Font = pygame.font.SysFont('Roboto', 100)
+    Medium_Font = pygame.font.SysFont('Roboto', 70)
+
+    Menu_Text = Medium_Font.render("Main Menu", True, (0, 0, 0), (255, 255, 255))
+    Quit_Text = Medium_Font.render("Quit Game", True, (0, 0, 0), (255, 255, 255))
+    Score_Text = Medium_Font.render(f"Your Score: {score}", True, (0, 0, 0), (255, 255, 255))
+
+
+    scores = []
+    with open(f"LeaderBoards/Local{Difficulty}.txt", 'r') as file:
+        for line in file:
+            scores.append(int(line))
+
+    endMsg = ""
+    if BotSwitch:
+        endMsg = "Game Over"
+        with open(f"LeaderBoards/Local{Difficulty}.txt", 'w') as file:
+            for i in range(3):
+                if score > scores[i]:
+                    scores[i] = score
+                    break
+            
+            for number in scores:
+                file.write(f"{number}\n")
+
+    Leaderboard_Text = Medium_Font.render(f"TOP {Difficulty} SCORES: First. {scores[0]} Second. {scores[1]} Third {scores[2]}", True, (0, 0, 0), (255, 255, 255))
+
+    if not BotSwitch:
+        if score:
+            endMsg = "Right Player Wins!"
+        else:
+            endMsg = "Left Player Wins!"
+    WinText = Big_Font.render(f"{endMsg}", True, (0, 0, 0), (255, 255, 255))
+    
+    while running:
+        clock.tick(60)
+        for event in pygame.event.get():
+            if event.type == pygame.quit:
+                running = False
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                pos = event.pos
+
+                if MenuButton.PressButton(pos):
+                    running = False
+                    print("main")
+                if QuitButton.PressButton(pos):
+                    sys.exit()
+    
+
+        Screen.fill((0, 0, 0))
+        pygame.draw.rect(Screen, MenuButton.color, MenuButton.rect)
+        pygame.draw.rect(Screen, QuitButton.color, QuitButton.rect)
+
+        Screen.blit(Menu_Text, (MenuButton.pos[0] + TextIndent, MenuButton.pos[1] + 15))
+        Screen.blit(Quit_Text, (QuitButton.pos[0] + TextIndent, QuitButton.pos[1] + 5))
+
+        
+        if BotSwitch:
+            Screen.blit(Leaderboard_Text, ((WIDTH / 2) - 500, (HEIGHT / 10)))
+            Screen.blit(Score_Text, ((WIDTH / 2) - 500, (HEIGHT / 10) - 50))
+
+        Screen.blit(WinText, ((WIDTH / 2) - 250, 150 + (HEIGHT / 10)))
+        pygame.display.flip()
+
     
 def main():
     left_score = 0
@@ -297,8 +376,8 @@ def main():
         if collided:
             collided = collided[0]  # will only ever collide with 1 paddle at a time.
             if collided != last_collided:
-                if pong_b.velocity <= 10:
-                    pong_b.velocity += 0.2
+                if pong_b.velocity <= 30:
+                    pong_b.velocity += 0.4
                 pong_b.bounce(collided)
                 last_collided = collided
 
@@ -324,10 +403,16 @@ def main():
             elif pong_b.pos[0] > WIDTH:
                 left_score += 1
 
+            if right_score >= 3:
+                EndMenu(left_score)
+                break
+            elif left_score >= 3 and BotSwitch == 0:
+                EndMenu(0)
+                break
 
             last_collided = None
             pong_b.pos = vec(WIDTH/2, HEIGHT/2)
-            pong_b.velocity = 4
+            pong_b.velocity = 6
             directions = [[1, 0], [-1, 0]]
             pong_b.direction = random.choice(directions)
             left_scoreboard = Small_Font.render(f'{left_score}', True, (255, 255, 255), (0, 0, 0))
@@ -338,7 +423,9 @@ def main():
         FramePerSec.tick(FPS)
 
 
+
 if __name__ == '__main__':
-    if replay:
+    pygame.init()
+    while replay:
         StartMenu()
         main()
