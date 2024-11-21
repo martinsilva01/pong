@@ -125,34 +125,33 @@ class Bot(Paddle):
 
 
 def StartMenu():
-    # pygame.init()
     ButtonIndent = (WIDTH / 4)
     TextIndent = 10
     global Difficulty
     global BotSwitch
-    
+
     StartButton = Button((ButtonIndent, 350), 450, 100)
     ExitButton = Button((ButtonIndent, 500), 150, 50)
     ReturnButton = Button((ButtonIndent, 500), 150, 50)
-    
+
     OnePlayerButton = Button((ButtonIndent, 330), 450, 65)
     TwoPlayerButton = Button((ButtonIndent, 410), 450, 65)
-    
+
     EasyButton = Button((ButtonIndent, 300), 450, 50)
     MediumButton = Button((ButtonIndent, 365), 450, 50)
     HardButton = Button((ButtonIndent, 430), 450, 50)
-    
-    Screen = displaysurface  # Display(640, 580)
+
+    Screen = displaysurface
     clock = pygame.time.Clock()
     running = True
     screen_index = 1
-    
+
     Big_Font = pygame.font.SysFont('Roboto', 100)
     Medium_Font = pygame.font.SysFont('Roboto', 70)
     Small_Font = pygame.font.SysFont('Roboto', 60)
-    Title_Font = pygame.font.SysFont("Impact", 150)
+    Title_Font = pygame.font.SysFont("Impact", 250)
     Subtitle_Font = pygame.font.SysFont("Impact", 37)
-    
+
     Pong_Text = Title_Font.render("PONG", True, (255, 255, 255), (0, 0, 0))
     Sub_Text = Subtitle_Font.render("By Team 3", True, (255, 255, 255), (0, 0, 0))
     Start_Text = Big_Font.render("Start Game", True, (0, 0, 0), (255, 255, 255))
@@ -163,45 +162,53 @@ def StartMenu():
     Hard_Text = Small_Font.render("Hard CPU", True, (0, 0, 0), (255, 255, 255))
     Exit_Text = Small_Font.render("Quit", True, (0, 0, 0), (255, 255, 255))
     Back_Text = Small_Font.render("Back", True, (0, 0, 0), (255, 255, 255))
-    
+
     while running:
         clock.tick(60)
         for event in pygame.event.get():
-            if event.type == pygame.quit:
+            if event.type == pygame.QUIT:
                 running = False
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 pos = event.pos
-    
+
                 if screen_index == 3:
                     if EasyButton.PressButton(pos):
+                        play_sound(button_select_sound)
                         print("WIP: Easy CPU")
                         Difficulty = "EASY"
                         running = False
                     if MediumButton.PressButton(pos):
+                        play_sound(button_select_sound)
                         print("WIP: Medium CPU")
                         Difficulty = "MEDIUM"
                         running = False
                     if HardButton.PressButton(pos):
+                        play_sound(button_select_sound)
                         print("WIP: Hard CPU")
                         Difficulty = "HARD"
                         running = False
-    
+
                 if screen_index == 2:
                     if OnePlayerButton.PressButton(pos):
+                        play_sound(button_select_sound)
                         screen_index = 3
                         BotSwitch = True
                     if TwoPlayerButton.PressButton(pos):
+                        play_sound(button_select_sound)
                         BotSwitch = False
                         running = False
-    
+
                 if screen_index == 1:
                     if StartButton.PressButton(pos):
+                        play_sound(button_select_sound)
                         screen_index = 2
                     if ExitButton.PressButton(pos):
+                        play_sound(button_select_sound)
                         sys.exit()
                 if (screen_index == 2) or (screen_index == 3):
                     if ReturnButton.PressButton(pos):
+                        play_sound(button_select_sound)
                         screen_index = 1
     
         if screen_index == 1:
@@ -295,9 +302,10 @@ def EndMenu(score):
                 pos = event.pos
 
                 if MenuButton.PressButton(pos):
+                    play_sound(button_select_sound)
                     running = False
-                    print("main")
                 if QuitButton.PressButton(pos):
+                    play_sound(button_select_sound)
                     sys.exit()
     
 
