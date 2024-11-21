@@ -317,8 +317,8 @@ def main():
     Small_Font = pygame.font.SysFont('Roboto', 60)
     left_scoreboard = Small_Font.render(f'{left_score}', True, (255, 255, 255), (0, 0, 0))
     right_scoreboard = Small_Font.render(f'{right_score}', True, (255, 255, 255), (0, 0, 0))
-    
-    
+    game_paused = False
+
     if Difficulty == "HARD":
         Range = 170
     elif Difficulty == "MEDIUM":
@@ -352,6 +352,21 @@ def main():
                 pygame.quit()
                 sys.exit()
         
+            
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_p:
+                    game_paused = not game_paused
+        
+        
+        if game_paused:
+            font = pygame.font.Font(None, 36)
+            text = font.render("Paused", True, (255, 255, 255))
+            displaysurface.fill((0, 0, 0))
+            displaysurface.blit(text, (WIDTH/2 - text.get_width() / 2, HEIGHT / 2 - text.get_height() / 2))
+            pygame.display.flip()
+            continue
+
+
         displaysurface.fill((0, 0, 0))
 
         displaysurface.blit(left_scoreboard, ((WIDTH / 2) - 120, 30))
