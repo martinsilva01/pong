@@ -80,6 +80,9 @@ class Ball(pygame.sprite.Sprite):
         self.direction[1] = math.sin(newAng * math.pi / 180)
 
 def main():
+    # Play background music
+    play_background_music()
+
     l_paddle = Paddle(60, HEIGHT/2, LEFT)
     r_paddle = Paddle(580, HEIGHT/2, RIGHT)
 
@@ -95,6 +98,7 @@ def main():
     while True:
         for event in pygame.event.get():
             if event.type == QUIT:
+                stop_background_music()  # Stop music when exiting
                 pygame.quit()
                 sys.exit()
         
@@ -103,25 +107,33 @@ def main():
         l_paddle.move()
         r_paddle.move()
         pong_b.move()
+        
         for entity in paddlesGroup:
             displaysurface.blit(entity.surf, entity.rect)
         
         for entity in gamePieceGroup:
             displaysurface.blit(entity.surf, entity.rect)
 
+        # Play paddle hit sound on collision
         collided = pygame.sprite.spritecollide(pong_b, paddlesGroup, False)
         if collided:
-            collided = collided[0] # will only ever collide with 1 paddle at a time.
+            collided = collided[0]
             pong_b.bounce(collided)
+            play_sound(paddle_hit_sound)
 
+        # Play wall bounce sound
         if pong_b.pos[1] <= 0 or pong_b.pos[1] >= HEIGHT:
             pong_b.boundary_bounce()
+            play_sound(wall_hit_sound)
 
+        # Play score sound when ball exits bounds
+        if pong_b.pos[0] <= 0 or pong_b.pos[0] >= WIDTH:
+            play_sound(score_sound)
+            pong_b.pos = vec(WIDTH / 2, HEIGHT / 2)  # Reset ball position
+            pong_b.direction = [1, 0]  # Reset ball direction
         
         pygame.display.update()
         FramePerSec.tick(FPS)
-
-
 
 if __name__ == '__main__':
     main()
