@@ -17,7 +17,10 @@ FramePerSec = pygame.time.Clock()
  
 displaysurface = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Pong")
- 
+
+# Variable to track if the BGM is muted
+bgm_muted = False
+
 class Paddle(pygame.sprite.Sprite):
     def __init__(self, x, y, l_or_r):
         super().__init__() 
@@ -95,12 +98,23 @@ def main():
     gamePieceGroup = pygame.sprite.Group()
     gamePieceGroup.add(pong_b)
     
+    global bgm_muted  # Access the bgm_muted variable
+
     while True:
         for event in pygame.event.get():
             if event.type == QUIT:
                 stop_background_music()  # Stop music when exiting
                 pygame.quit()
                 sys.exit()
+
+            # Toggle background music mute with M key
+            if event.type == KEYDOWN and event.key == K_m:
+                if bgm_muted:
+                    pygame.mixer.music.set_volume(0.25)  # Restore volume
+                    bgm_muted = False
+                else:
+                    pygame.mixer.music.set_volume(0)  # Mute volume
+                    bgm_muted = True
         
         displaysurface.fill((0,0,0))
     
