@@ -5,7 +5,7 @@ import math
 import time
 import random
 
-#from audio import *
+from audio import *
 
 pygame.init()
 
@@ -124,6 +124,9 @@ def StartMenu():
     TextIndent = 10
     global Difficulty
     global BotSwitch
+
+    # Play background music
+    play_background_music()
     
     StartButton = Button((ButtonIndent, 350), 450, 100)
     ExitButton = Button((ButtonIndent, 500), 150, 50)
@@ -330,6 +333,7 @@ def main():
     
     last_collided = None
     
+
     l_paddle = Paddle(60, HEIGHT/2, LEFT)
     
     if BotSwitch is True:  # Will create a Paddle object or Bot Object
@@ -349,6 +353,7 @@ def main():
     while True:
         for event in pygame.event.get():
             if event.type == QUIT:
+                stop_background_music()  # Stop music when exiting
                 pygame.quit()
                 sys.exit()
         
@@ -380,6 +385,7 @@ def main():
             r_paddle.move()
 
         pong_b.move()
+        
         for entity in paddlesGroup:
             displaysurface.blit(entity.surf, entity.rect)
         
@@ -396,21 +402,34 @@ def main():
                 if pong_b.velocity <= 30:
                     pong_b.velocity += 0.4
                 pong_b.bounce(collided)
+        # Play paddle hit sound on collision
+                play_sound(paddle_hit_sound)
                 last_collided = collided
+
 
         # Top/Bottom Boundary Bounce
         if pong_b.pos[1] <= 0:
             pong_b.pos[1] = 1
             pong_b.direction[1] = 1 * abs(pong_b.direction[1])
+        # Play wall bounce sound
+            play_sound(wall_hit_sound)
+
         if pong_b.pos[1] >= HEIGHT:
             pong_b.pos[1] = HEIGHT-1
             pong_b.direction[1] *= -1 * abs(pong_b.direction[1])
+        # Play wall bounce sound
+            play_sound(wall_hit_sound)
 
        
         # Also we will need to reset it to default value at the start
 
         # point checking and reset ball
+
         if pong_b.pos[0] < 0 or pong_b.pos[0] > WIDTH:
+
+
+        # Play score sound when ball exits bounds
+            play_sound(score_sound)
 
             if pong_b.pos[0] < 0:
                 right_score += 1
@@ -436,8 +455,6 @@ def main():
 
         pygame.display.update()
         FramePerSec.tick(FPS)
-
-
 
 if __name__ == '__main__':
     pygame.init()
