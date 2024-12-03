@@ -36,7 +36,7 @@ play_background_music()
 class Button:
     def __init__(self, pos, width, height, text=""):
         self.rect = pygame.Rect(pos, (width, height))
-        self.color = (255, 255, 255)
+        self.color = (0, 0, 0)
         self.pos = pos
         self.end_x = pos[0] + width
         self.end_y = pos[1] + height
@@ -154,14 +154,14 @@ def StartMenu():
 
     Pong_Text = Title_Font.render("PONG", True, (255, 255, 255), (0, 0, 0))
     Sub_Text = Subtitle_Font.render("By Team 3", True, (255, 255, 255), (0, 0, 0))
-    Start_Text = Big_Font.render("Start Game", True, (0, 0, 0), (255, 255, 255))
-    Single_Text = Medium_Font.render("Singleplayer", True, (0, 0, 0), (255, 255, 255))
-    Multi_Text = Medium_Font.render("Multiplayer (Bo5)", True, (0, 0, 0), (255, 255, 255))
-    Easy_Text = Small_Font.render("Easy CPU", True, (0, 0, 0), (255, 255, 255))
-    Medium_Text = Small_Font.render("Medium CPU", True, (0, 0, 0), (255, 255, 255))
-    Hard_Text = Small_Font.render("Hard CPU", True, (0, 0, 0), (255, 255, 255))
-    Exit_Text = Small_Font.render("Quit", True, (0, 0, 0), (255, 255, 255))
-    Back_Text = Small_Font.render("Back", True, (0, 0, 0), (255, 255, 255))
+    Start_Text = Big_Font.render("Start Game", True, (255, 255, 255), (0, 0, 0))
+    Single_Text = Medium_Font.render("Singleplayer", True, (255, 255, 255), (0, 0, 0))
+    Multi_Text = Medium_Font.render("Multiplayer (Bo5)", True, (255, 255, 255), (0, 0, 0))
+    Easy_Text = Small_Font.render("Easy CPU", True, (255, 255, 255), (0, 0, 0))
+    Medium_Text = Small_Font.render("Medium CPU", True, (255, 255, 255), (0, 0, 0))
+    Hard_Text = Small_Font.render("Hard CPU", True, (255, 255, 255), (0, 0, 0))
+    Exit_Text = Small_Font.render("Quit", True, (255, 255, 255), (0, 0, 0))
+    Back_Text = Small_Font.render("Back", True, (255, 255, 255), (0, 0, 0))
 
     while running:
         clock.tick(60)
@@ -261,9 +261,9 @@ def EndMenu(score):
     Big_Font = pygame.font.SysFont('Roboto', 100)
     Medium_Font = pygame.font.SysFont('Roboto', 70)
 
-    Menu_Text = Medium_Font.render("Main Menu", True, (0, 0, 0), (255, 255, 255))
-    Quit_Text = Medium_Font.render("Quit Game", True, (0, 0, 0), (255, 255, 255))
-    Score_Text = Medium_Font.render(f"Your Score: {score}", True, (0, 0, 0), (255, 255, 255))
+    Menu_Text = Medium_Font.render("Main Menu", True, (255, 255, 255), (0, 0, 0))
+    Quit_Text = Medium_Font.render("Quit Game", True, (255, 255, 255), (0, 0, 0))
+    Score_Text = Medium_Font.render(f"Your Score: {score}", True, (255, 255, 255), (0, 0, 0))
 
 
     scores = []
@@ -283,14 +283,14 @@ def EndMenu(score):
             for number in scores:
                 file.write(f"{number}\n")
 
-    Leaderboard_Text = Medium_Font.render(f"TOP {Difficulty} SCORES: First. {scores[0]} Second. {scores[1]} Third {scores[2]}", True, (0, 0, 0), (255, 255, 255))
+    Leaderboard_Text = Medium_Font.render(f"TOP {Difficulty} SCORES: First. {scores[0]} Second. {scores[1]} Third {scores[2]}", True, (255, 255, 255), (0, 0, 0))
 
     if not BotSwitch:
         if score:
             endMsg = "Right Player Wins!"
         else:
             endMsg = "Left Player Wins!"
-    WinText = Big_Font.render(f"{endMsg}", True, (0, 0, 0), (255, 255, 255))
+    WinText = Big_Font.render(f"{endMsg}", True, (255, 255, 255), (0, 0, 0))
     
     while running:
         clock.tick(60)
