@@ -126,23 +126,23 @@ class Bot(Paddle):
 
 def StartMenu():
     TextIndent = 10
-    ButtonIndentX = 50
+    ButtonIndentX = 150
     ButtonIndentY = 150
     ButtonResizeFactor = 1.2
 
     global Difficulty
     global BotSwitch
 
-    StartButton = Button((ButtonIndentX, 350 + ButtonIndentY), 450 * ButtonResizeFactor, 100 * ButtonResizeFactor)
-    ExitButton = Button((ButtonIndentX, 500 + ButtonIndentY), 150 * ButtonResizeFactor, 50 * ButtonResizeFactor)
-    ReturnButton = Button((ButtonIndentX, 510 + ButtonIndentY), 150 * ButtonResizeFactor, 50 * ButtonResizeFactor)
+    StartButton = Button((ButtonIndentX, 300 + ButtonIndentY), 450 * ButtonResizeFactor, 100 * ButtonResizeFactor)
+    ExitButton = Button((ButtonIndentX, 450 + ButtonIndentY), 150 * ButtonResizeFactor, 50 * ButtonResizeFactor)
+    ReturnButton = Button((ButtonIndentX, 460 + ButtonIndentY), 150 * ButtonResizeFactor, 50 * ButtonResizeFactor)
 
-    OnePlayerButton = Button((ButtonIndentX, 330 + ButtonIndentY), 450 * ButtonResizeFactor, 65 * ButtonResizeFactor)
-    TwoPlayerButton = Button((ButtonIndentX, 420 + ButtonIndentY), 450 * ButtonResizeFactor, 65 * ButtonResizeFactor)
+    OnePlayerButton = Button((ButtonIndentX, 280 + ButtonIndentY), 450 * ButtonResizeFactor, 65 * ButtonResizeFactor)
+    TwoPlayerButton = Button((ButtonIndentX, 370 + ButtonIndentY), 450 * ButtonResizeFactor, 65 * ButtonResizeFactor)
 
-    EasyButton = Button((ButtonIndentX, 300 + ButtonIndentY), 450 * ButtonResizeFactor, 50 * ButtonResizeFactor)
-    MediumButton = Button((ButtonIndentX, 370 + ButtonIndentY), 450 * ButtonResizeFactor, 50 * ButtonResizeFactor)
-    HardButton = Button((ButtonIndentX, 440 + ButtonIndentY), 450 * ButtonResizeFactor, 50 * ButtonResizeFactor)
+    EasyButton = Button((ButtonIndentX, 250 + ButtonIndentY), 450 * ButtonResizeFactor, 50 * ButtonResizeFactor)
+    MediumButton = Button((ButtonIndentX, 320 + ButtonIndentY), 450 * ButtonResizeFactor, 50 * ButtonResizeFactor)
+    HardButton = Button((ButtonIndentX, 390 + ButtonIndentY), 450 * ButtonResizeFactor, 50 * ButtonResizeFactor)
 
     Screen = displaysurface
     clock = pygame.time.Clock()
@@ -155,16 +155,16 @@ def StartMenu():
     Title_Font = pygame.font.SysFont("Impact", 350)
     Subtitle_Font = pygame.font.SysFont("Impact", 57)
 
-    Pong_Text = Title_Font.render("PONG", True, (255, 255, 255), (0, 0, 0))
-    Sub_Text = Subtitle_Font.render("By Team 3", True, (255, 255, 255), (0, 0, 0))
-    Start_Text = Big_Font.render("Start Game", True, (0, 0, 0), (255, 255, 255))
-    Single_Text = Medium_Font.render("Singleplayer", True, (0, 0, 0), (255, 255, 255))
-    Multi_Text = Medium_Font.render("Multiplayer (Bo5)", True, (0, 0, 0), (255, 255, 255))
-    Easy_Text = Small_Font.render("Easy CPU", True, (0, 0, 0), (255, 255, 255))
-    Medium_Text = Small_Font.render("Medium CPU", True, (0, 0, 0), (255, 255, 255))
-    Hard_Text = Small_Font.render("Hard CPU", True, (0, 0, 0), (255, 255, 255))
-    Exit_Text = Small_Font.render("Quit", True, (0, 0, 0), (255, 255, 255))
-    Back_Text = Small_Font.render("Back", True, (0, 0, 0), (255, 255, 255))
+    Pong_Text = Title_Font.render("PONG", True,  (255, 255, 255), (0, 0, 0))
+    Sub_Text = Subtitle_Font.render("By Team 3", True,  (255, 255, 255), (0, 0, 0))
+    Start_Text = Big_Font.render("Start Game", True,  (255, 255, 255), (0, 0, 0))
+    Single_Text = Medium_Font.render("Singleplayer", True,  (255, 255, 255), (0, 0, 0))
+    Multi_Text = Medium_Font.render("Multiplayer (Bo5)", True,  (255, 255, 255), (0, 0, 0))
+    Easy_Text = Small_Font.render("Easy CPU", True,  (255, 255, 255), (0, 0, 0))
+    Medium_Text = Small_Font.render("Medium CPU", True,  (255, 255, 255), (0, 0, 0))
+    Hard_Text = Small_Font.render("Hard CPU", True,  (255, 255, 255), (0, 0, 0))
+    Exit_Text = Small_Font.render("Quit", True,  (255, 255, 255), (0, 0, 0))
+    Back_Text = Small_Font.render("Back", True,  (255, 255, 255), (0, 0, 0))
 
     while running:
         clock.tick(60)
@@ -243,8 +243,8 @@ def StartMenu():
             Screen.blit(Medium_Text, (MediumButton.pos[0] + TextIndent, MediumButton.pos[1] + 5))
             Screen.blit(Hard_Text, (HardButton.pos[0] + TextIndent, HardButton.pos[1] + 5))
             Screen.blit(Back_Text, (ReturnButton.pos[0] + TextIndent, ReturnButton.pos[1] + 5))
-        Screen.blit(Pong_Text, ((WIDTH / 2) - 350, 0))
-        Screen.blit(Sub_Text, ((WIDTH / 2) - 350, 370))
+        Screen.blit(Pong_Text, ((WIDTH / 2) - 350, 75))
+        Screen.blit(Sub_Text, ((WIDTH / 2) - 335, 300))
 
         pygame.display.flip()
 
@@ -265,9 +265,9 @@ def EndMenu(score):
     Big_Font = pygame.font.SysFont('Roboto', 100)
     Medium_Font = pygame.font.SysFont('Roboto', 70)
 
-    Menu_Text = Medium_Font.render("Main Menu", True, (255, 255, 255), (0, 0, 0))
-    Quit_Text = Medium_Font.render("Quit Game", True, (255, 255, 255), (0, 0, 0))
-    Score_Text = Medium_Font.render(f"Your Score: {score}", True, (255, 255, 255), (0, 0, 0))
+    Menu_Text = Medium_Font.render("Main Menu", True,  (255, 255, 255), (0, 0, 0))
+    Quit_Text = Medium_Font.render("Quit Game", True,  (255, 255, 255), (0, 0, 0))
+    Score_Text = Medium_Font.render(f"Your Score: {score}", True,  (255, 255, 255), (0, 0, 0))
 
 
     scores = []
@@ -287,14 +287,14 @@ def EndMenu(score):
             for number in scores:
                 file.write(f"{number}\n")
 
-    Leaderboard_Text = Medium_Font.render(f"TOP {Difficulty} SCORES: First. {scores[0]} Second. {scores[1]} Third {scores[2]}", True, (255, 255, 255), (0, 0, 0))
+    Leaderboard_Text = Medium_Font.render(f"TOP {Difficulty} SCORES: First. {scores[0]} Second. {scores[1]} Third {scores[2]}", True,  (255, 255, 255), (0, 0, 0))
 
     if not BotSwitch:
         if score:
             endMsg = "Right Player Wins!"
         else:
             endMsg = "Left Player Wins!"
-    WinText = Big_Font.render(f"{endMsg}", True, (255, 255, 255), (0, 0, 0))
+    WinText = Big_Font.render(f"{endMsg}", True,  (255, 255, 255), (0, 0, 0))
     
     while running:
         clock.tick(60)
@@ -334,8 +334,8 @@ def main():
     left_score = 0
     right_score = 0
     Small_Font = pygame.font.SysFont('Roboto', 60)
-    left_scoreboard = Small_Font.render(f'{left_score}', True, (255, 255, 255), (0, 0, 0))
-    right_scoreboard = Small_Font.render(f'{right_score}', True, (255, 255, 255), (0, 0, 0))
+    left_scoreboard = Small_Font.render(f'{left_score}', True,  (255, 255, 255), (0, 0, 0))
+    right_scoreboard = Small_Font.render(f'{right_score}', True,  (255, 255, 255), (0, 0, 0))
     game_paused = False
 
     # Determine CPU range based on difficulty
@@ -456,8 +456,8 @@ def main():
             pong_b.pos = vec(WIDTH / 2, HEIGHT / 2)
             pong_b.velocity = 6
             pong_b.direction = random.choice([[1, 0], [-1, 0]])
-            left_scoreboard = Small_Font.render(f'{left_score}', True, (255, 255, 255), (0, 0, 0))
-            right_scoreboard = Small_Font.render(f'{right_score}', True, (255, 255, 255), (0, 0, 0))
+            left_scoreboard = Small_Font.render(f'{left_score}', True,  (255, 255, 255), (0, 0, 0))
+            right_scoreboard = Small_Font.render(f'{right_score}', True,  (255, 255, 255), (0, 0, 0))
             time.sleep(1)
 
         pygame.display.update()
