@@ -250,13 +250,15 @@ def StartMenu():
 
 
 def EndMenu(score):
-    ButtonIndent = (WIDTH / 4)
+    ButtonIndent = (WIDTH / 2)
     TextIndent = 10
+    ButtonWidth = 300
+    ButtonHeight = 70
     global Difficulty
     global BotSwitch
 
-    MenuButton = Button((ButtonIndent, HEIGHT * 0.5), 300, 70)
-    QuitButton = Button((ButtonIndent, HEIGHT * 0.6), 300, 70)
+    MenuButton = Button((ButtonIndent - ButtonWidth - 50, HEIGHT * 0.8), ButtonWidth, ButtonHeight)
+    QuitButton = Button((ButtonIndent + 50, HEIGHT * 0.8), ButtonWidth, ButtonHeight)
     
     Screen = displaysurface  # Display(640, 580)
     clock = pygame.time.Clock()
@@ -268,7 +270,7 @@ def EndMenu(score):
     Menu_Text = Medium_Font.render("Main Menu", True,  (255, 255, 255), (0, 0, 0))
     Quit_Text = Medium_Font.render("Quit Game", True,  (255, 255, 255), (0, 0, 0))
     Score_Text = Medium_Font.render(f"Your Score: {score}", True,  (255, 255, 255), (0, 0, 0))
-
+    Score_Text_Width = Score_Text.get_width()
 
     scores = []
     with open(f"LeaderBoards/Local{Difficulty}.txt", 'r') as file:
@@ -287,7 +289,11 @@ def EndMenu(score):
             for number in scores:
                 file.write(f"{number}\n")
 
-    Leaderboard_Text = Medium_Font.render(f"TOP {Difficulty} SCORES: First. {scores[0]} Second. {scores[1]} Third {scores[2]}", True,  (255, 255, 255), (0, 0, 0))
+    Leaderboard_Text = Medium_Font.render(f"TOP {Difficulty} SCORES", True,  (255, 255, 255), (0, 0, 0))
+    Leaderboard_Text_Width = Leaderboard_Text.get_width()
+    First_Text = Medium_Font.render(f"First - {scores[0]}", True,  (255, 255, 255), (0, 0, 0))
+    Second_Text = Medium_Font.render(f"Second - {scores[1]}", True,  (255, 255, 255), (0, 0, 0))
+    Third_Text = Medium_Font.render(f"Third - {scores[2]}", True,  (255, 255, 255), (0, 0, 0))
 
     if not BotSwitch:
         if score:
@@ -295,6 +301,7 @@ def EndMenu(score):
         else:
             endMsg = "Left Player Wins!"
     WinText = Big_Font.render(f"{endMsg}", True,  (255, 255, 255), (0, 0, 0))
+    WinText_Width = WinText.get_width()
     
     while running:
         clock.tick(60)
@@ -317,15 +324,20 @@ def EndMenu(score):
         pygame.draw.rect(Screen, MenuButton.color, MenuButton.rect)
         pygame.draw.rect(Screen, QuitButton.color, QuitButton.rect)
 
-        Screen.blit(Menu_Text, (MenuButton.pos[0] + TextIndent, MenuButton.pos[1] + 15))
+        Screen.blit(Menu_Text, (MenuButton.pos[0] + TextIndent, MenuButton.pos[1] + 5))
         Screen.blit(Quit_Text, (QuitButton.pos[0] + TextIndent, QuitButton.pos[1] + 5))
 
         
-        if BotSwitch:
-            Screen.blit(Leaderboard_Text, ((WIDTH / 2) - 500, (HEIGHT / 10)))
-            Screen.blit(Score_Text, ((WIDTH / 2) - 500, (HEIGHT / 10) - 50))
+        Screen.blit(WinText, ((WIDTH / 2) - (WinText_Width / 2), (HEIGHT / 5)))
 
-        Screen.blit(WinText, ((WIDTH / 2) - 250, 150 + (HEIGHT / 10)))
+        if BotSwitch:
+
+            Screen.blit(Score_Text, ((WIDTH / 2) - (Score_Text_Width / 2), (HEIGHT / 5) + 100))
+            Screen.blit(Leaderboard_Text, ((WIDTH / 2) - (Leaderboard_Text_Width / 2), (HEIGHT / 5) + 200))
+            Screen.blit(First_Text, ((WIDTH / 2) - (Leaderboard_Text_Width / 2) + 50, (HEIGHT / 5) + 250))
+            Screen.blit(Second_Text, ((WIDTH / 2) - (Leaderboard_Text_Width / 2) + 50, (HEIGHT / 5) + 300))
+            Screen.blit(Third_Text, ((WIDTH / 2) - (Leaderboard_Text_Width / 2) + 50, (HEIGHT / 5) + 350))
+
         pygame.display.flip()
 
     
