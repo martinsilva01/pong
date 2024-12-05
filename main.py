@@ -149,11 +149,11 @@ def StartMenu():
     running = True
     screen_index = 1
 
-    Big_Font = pygame.font.SysFont('Roboto', math.floor(105 * ButtonResizeFactor))
-    Medium_Font = pygame.font.SysFont('Roboto', math.floor(75 * ButtonResizeFactor))
-    Small_Font = pygame.font.SysFont('Roboto', math.floor(65 * ButtonResizeFactor))
-    Title_Font = pygame.font.SysFont("Impact", 350)
-    Subtitle_Font = pygame.font.SysFont("Impact", 57)
+    Big_Font = pygame.font.SysFont(None, math.floor(105 * ButtonResizeFactor))
+    Medium_Font = pygame.font.SysFont(None, math.floor(75 * ButtonResizeFactor))
+    Small_Font = pygame.font.SysFont(None, math.floor(65 * ButtonResizeFactor))
+    Title_Font = pygame.font.SysFont(None, 350)
+    Subtitle_Font = pygame.font.SysFont(None, 57)
 
     Pong_Text = Title_Font.render("PONG", True,  (255, 255, 255), (0, 0, 0))
     Sub_Text = Subtitle_Font.render("By Team 3", True,  (255, 255, 255), (0, 0, 0))
@@ -264,8 +264,8 @@ def EndMenu(score):
     clock = pygame.time.Clock()
     running = True
 
-    Big_Font = pygame.font.SysFont('Roboto', 100)
-    Medium_Font = pygame.font.SysFont('Roboto', 70)
+    Big_Font = pygame.font.SysFont(None, 100)
+    Medium_Font = pygame.font.SysFont(None, 70)
 
     Menu_Text = Medium_Font.render("Main Menu", True,  (255, 255, 255), (0, 0, 0))
     Quit_Text = Medium_Font.render("Quit Game", True,  (255, 255, 255), (0, 0, 0))
@@ -345,7 +345,7 @@ def main():
     global music_on
     left_score = 0
     right_score = 0
-    Small_Font = pygame.font.SysFont('Roboto', 60)
+    Small_Font = pygame.font.SysFont(None, 60)
     left_scoreboard = Small_Font.render(f'{left_score}', True,  (255, 255, 255), (0, 0, 0))
     right_scoreboard = Small_Font.render(f'{right_score}', True,  (255, 255, 255), (0, 0, 0))
     game_paused = False
